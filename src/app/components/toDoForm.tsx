@@ -1,26 +1,36 @@
 'use client';
 import { useState } from 'react';
 
-interface toDoFormProps {
-    addTask: (task: string) => void;
-}
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-const ToDoForm = ({ addTask }: toDoFormProps) => {
-  const [task, setTask] = useState('');
+const ToDoForm = ({ addTask }: { addTask: (day:string, taskText: string) => void}) => {
+  const [taskText, setTaskText] = useState("");
+  const [selectedDay, setSelectedDay] = useState();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (task.trim() === '') return;
-    addTask(task);
-    setTask('');
+    if (!taskText.trim()) return;
+    addTask(selectedDay, taskText);
+    setTaskText("");
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+      <select
+        value={selectedDay}
+        onChange={(e) => setSelectedDay(e.target.value)}
+        className="p-2 border rounded"
+        >
+          {daysOfWeek.map((day) => (
+            <option key={day} value={day}>
+              {day}
+            </option>
+          ))}
+        </select>
       <input
         type="text"
-        value={task}
-        onChange={(e) => setTask(e.target.value)}
+        value={taskText}
+        onChange={(e) => setTaskText(e.target.value)}
         placeholder="Add a new task"
         className="p-2 border-2 border-orange-300 rounded w-full"
       />

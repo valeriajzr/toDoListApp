@@ -3,20 +3,29 @@ import { useState, useEffect } from 'react';
 import ToDoForm from './components/toDoForm';
 import ToDoItem from './components/toDoItem';
 
+const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
 const Home = () => {
-  //status of the tasks
-  const [tasks, setTasks] = useState<string[]>([]);
+  //status of the tasks organized by day
+  const [tasks, setTasks] = useState<Record<string, { id: number; text: string; completed: boolean }[]>>({});
 
   //function to get tasks from local storage
   const loadTasks = () => {
     const savedTasks = localStorage.getItem('tasks');
     if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+      const parsedTasks = JSON.parse(savedTasks);
+      const validTasks = Object.fromEntries(
+        Object.entries(parsedTasks).map(([day, tasks]) => [
+          day,
+          Array.isArray(tasks) ? tasks : []
+        ])
+      );
+      setTasks(validTasks);
     }
   };
 
   //function to save taks in local storage
-  const saveTasks = (updatedTasks: string[]) => {
+  const saveTasks = (updatedTasks: Record<string, { id: number; text: string; completed: boolean }[]>) => {
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
   };
 
@@ -26,18 +35,36 @@ const Home = () => {
   }, []);
 
 
-  //function to add a task
-  const addTask = (task: string) => {
-    const updatedTasks = [...tasks, task];
+  //function to add a task in a sepecific day
+  const addTask = (day: string, taskText: string) => {
+    const updatedTasks = {
+      ...tasks,
+      [day]: [...(tasks)[day] || [], {id: Date.now(), text: taskText, completed: false}]
+    };
     setTasks(updatedTasks);
-    saveTasks(updatedTasks); // save in localStorage
+    saveTasks(updatedTasks);
   };
 
-  //function to delete a task
-  const removeTask = (taskToRemove: string) => {
-    const updatedTasks = tasks.filter((task) => task !== taskToRemove);
+  //function to delete a task from a specific day
+  const removeTask = (day: string, taskId: number) => {
+    const updatedTasks = {
+      ...tasks,
+      [day]: tasks[day].filter((task) => task.id !== taskId)
+    };
     setTasks(updatedTasks);
-    saveTasks(updatedTasks); // save in localStorage
+    saveTasks(updatedTasks);
+  };
+
+  //function to mark a task as done or not done
+  const toggleComplete = (day: string, taskId: number) => {
+    const updatedTasks = {
+      ...tasks,
+      [day] : tasks[day].map((task) => 
+        task.id === taskId  ? {...task, completed: !task.completed } : task
+      )
+    };
+    setTasks(updatedTasks);
+    saveTasks(updatedTasks);
   };
 
   return (
@@ -47,11 +74,22 @@ const Home = () => {
       <ToDoForm addTask={addTask} />
       
       <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {tasks.map((task, index) => (
-          <ToDoItem key={index} task={task} removeTask={() => removeTask(task)} />
+        {Object.entries(tasks).map(([day, dayTasks]) => (
+          <div key={day}>
+            <h2 className="text-2x1 font-bold text-gray-700">{day}</h2>
+            {(Array.isArray(dayTasks) ? dayTasks : []).map((task) => (
+              <ToDoItem 
+                key={task.id} 
+                task={task} 
+                toggleComplete={() => toggleComplete(day, task.id)} 
+                removeTask={() => removeTask(day, task.id)} 
+              />
+            ))}
+          </div>
         ))}
       </div>
     </div>
   );
 };
+
 export default Home;
