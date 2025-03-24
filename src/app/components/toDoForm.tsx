@@ -5,7 +5,7 @@ const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sat
 
 const ToDoForm = ({ addTask }: { addTask: (day:string, taskText: string) => void}) => {
   const [taskText, setTaskText] = useState("");
-  const [selectedDay, setSelectedDay] = useState();
+  const [selectedDay, setSelectedDay] = useState(daysOfWeek[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ const ToDoForm = ({ addTask }: { addTask: (day:string, taskText: string) => void
       <select
         value={selectedDay}
         onChange={(e) => setSelectedDay(e.target.value)}
-        className="p-2 border rounded"
+        className="p-2 border-2 border-sky-700 rounded w-full"
         >
           {daysOfWeek.map((day) => (
             <option key={day} value={day}>
@@ -32,9 +32,9 @@ const ToDoForm = ({ addTask }: { addTask: (day:string, taskText: string) => void
         value={taskText}
         onChange={(e) => setTaskText(e.target.value)}
         placeholder="Add a new task"
-        className="p-2 border-2 border-orange-300 rounded w-full"
+        className="p-2 border-2 border-sky-700 rounded w-full"
       />
-      <button type="submit" className="mt-2 p-2 bg-green-500/75 shadow-md shadow-green-400/50 transition delay-100 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-green-500 text-white rounded w-full">
+      <button type="submit" className="mt-2 p-2 bg-sky-500/75 shadow-md shadow-sky-400/50 transition delay-100 duration-300 ease-in-out hover:-translate-y-1 hover:scale-100 hover:bg-sky-500 text-white rounded w-full">
         Add Task
       </button>
     </form>

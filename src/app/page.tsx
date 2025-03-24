@@ -68,11 +68,12 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-yellow-50 p-4">
-      <h1 className="font-mulish text-4xl font-bold text-center text-gray-500 mb-4">To-Do List</h1>
+    <div className="min-h-screen bg-stone-300 p-4">
+      <h1 className="font-mulish text-4xl font-bold text-center text-cyan-700 mb-4">To-Do List</h1>
 
       <ToDoForm addTask={addTask} />
       
+      <br></br>
       <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {Object.entries(tasks).map(([day, dayTasks]) => (
           <div key={day}>
