@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import ToDoForm from './components/toDoForm';
 import ToDoItem from './components/toDoItem';
 
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
 const Home = () => {
   //status of the tasks organized by day
   const [tasks, setTasks] = useState<Record<string, { id: number; text: string; completed: boolean }[]>>({});

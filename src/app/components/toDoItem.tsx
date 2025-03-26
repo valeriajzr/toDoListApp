@@ -1,4 +1,16 @@
-  const ToDoItem = ({ task, toggleComplete, removeTask }) => {
+type Task = {
+  id: number;
+  text: string;
+  completed: boolean;
+};
+
+type ToDoItemProps = {
+  task: Task;
+  toggleComplete: () => void;
+  removeTask: () => void;
+};
+  
+const ToDoItem: React.FC<ToDoItemProps> = ({ task, toggleComplete, removeTask }) => {
     return (
       <div className="flex items-center h-11 justify-between bg-blue-100 p-3 rounded-lg shadow-md mb-1">
         <span className={task.completed ? "line-through text-gray-400" : "text-gray-800"}>
